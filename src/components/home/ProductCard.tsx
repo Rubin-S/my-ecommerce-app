@@ -48,11 +48,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
           </Badge>
         )}
 
-        {/* Overlay for details, shown on hover */}
-        {/* This div covers the card and shows content on hover */}
         <motion.div
           className="absolute inset-0 bg-black/20 group-hover:bg-black/50 transition-colors duration-300 p-2 sm:p-3 flex flex-col justify-end"
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0.5 }}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }} // Content fades in on hover
         >
