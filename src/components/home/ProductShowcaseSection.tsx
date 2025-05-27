@@ -1,21 +1,21 @@
 // components/home/ProductShowcaseSection.tsx
 import React from "react";
 import ProductCard from "./ProductCard";
-import SellerCard from "./SellerCard";
+import SellerCard from "./SellerCard"; // Assuming SellerCard might need similar square/compact treatment if used here for "Top Sellers"
 import { MockProduct } from "@/lib/mockData/products";
 import { MockSeller } from "@/lib/mockData/sellers";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button"; // Assuming you have a Button component
+import { Button } from "../ui/button";
 import Link from "next/link";
 
 interface ProductShowcaseSectionProps {
   title: string;
-  items: (MockProduct | MockSeller)[]; // Array of products or sellers
+  items: (MockProduct | MockSeller)[];
   itemType: "product" | "seller";
-  largeAd?: React.ReactNode;
+  largeAd?: React.ReactNode; // This will be the square ad
   className?: string;
-  orientation?: "left" | "right"; // 'left' means ad on left, items on right. 'right' is ad on right.
-  viewAllLink?: string; // Optional link for a "View All" button
+  orientation?: "left" | "right";
+  viewAllLink?: string;
 }
 
 const ProductShowcaseSection: React.FC<ProductShowcaseSectionProps> = ({
@@ -24,19 +24,18 @@ const ProductShowcaseSection: React.FC<ProductShowcaseSectionProps> = ({
   itemType,
   largeAd,
   className,
-  orientation = "right", // Default: items on left, ad on right
+  orientation = "right",
   viewAllLink,
 }) => {
-  // Take the first 4 items to display in a 2x2 grid
-  const displayItems = items.slice(0, 4);
+  const displayItems = items.slice(0, 4); // Expecting 4 items for a 2x2 grid
 
   const adOrderClass = orientation === "left" ? "lg:order-1" : "lg:order-2";
   const itemsOrderClass = orientation === "left" ? "lg:order-2" : "lg:order-1";
 
   return (
-    <section className={cn("py-8", className)}>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+    <section className={cn("py-6 md:py-8", className)}>
+      <div className="flex justify-between items-center mb-4 md:mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
           {title}
         </h2>
         {viewAllLink && (
@@ -45,38 +44,39 @@ const ProductShowcaseSection: React.FC<ProductShowcaseSectionProps> = ({
           </Button>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        {/* Items Section (takes 2/3 width on lg screens) */}
+      {/* Main grid: 1 column on mobile, 2 columns (half-half) on large screens */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-stretch">
+        {/* Items Section (should be roughly square if it contains a 2x2 grid of square cards) */}
         <div
           className={cn(
-            "lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6", // Always 2 columns on sm and up for a 2x2 feel
+            "grid grid-cols-2 gap-2 sm:gap-3 md:gap-4", // 2 columns for items, creating 2x2 with 4 items
             itemsOrderClass
+            // To make this item grid itself aim for square, its container (this div)
+            // would need an aspect-square if its parent (lg:grid-cols-2) doesn't enforce height.
+            // Since items-stretch is on parent, height is determined by the square ad.
           )}
         >
           {displayItems.map((item) =>
             itemType === "product" ? (
               <ProductCard key={item.id} product={item as MockProduct} />
             ) : (
+              // If SellerCard is used, it also needs to be designed to fit this square grid cell
               <SellerCard key={item.id} seller={item as MockSeller} />
             )
           )}
         </div>
 
-        {/* Advertisement Section (takes 1/3 width on lg screens) */}
+        {/* Advertisement Section (square ad) */}
         {largeAd && (
           <div
             className={cn(
               "flex items-center justify-center",
               adOrderClass,
-              "mt-6 lg:mt-0"
+              "mt-4 lg:mt-0"
             )}
           >
-            {/* Ensure ad placeholder itself can stretch or has a defined aspect ratio */}
-            <div className="w-full h-full min-h-[200px] lg:min-h-0">
-              {" "}
-              {/* Wrapper for ad */}
-              {largeAd}
-            </div>
+            {/* The AdvertisementPlaceholder component is already styled with aspect-square */}
+            {largeAd}
           </div>
         )}
       </div>
